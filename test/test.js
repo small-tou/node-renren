@@ -22,7 +22,7 @@ var app_auth={
             res.end(); 
         })
        
-    }
+    }  
 } 
 //import some libs 
 var express = require('express');
@@ -65,13 +65,13 @@ app.get("/sina_auth_cb",app_auth.sina_auth_cb)
 //中间页面，提醒用户认证成功
 app.get('/oauth', function(req, res){
     var api = new RenRen(config);
-    api.status.set({
-          status: ("hello , send by node-renren library !NodeJS Power !"),
-        access_token:decodeURIComponent(req.cookies.token)  
+    api.status.set({ 
+        status: ("hello"),
+        access_token: (req.cookies.token) 
     },function(data){ 
-                       console.log(data.toString()    )
-                 res.render('oauth.html');     
-        })
+        console.log(data.toString()    )
+        res.render('oauth.html');     
+    })
    
 });
 
