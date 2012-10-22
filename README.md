@@ -7,4 +7,4 @@ nodejs版人人网oauth认证和api sdk
 
 需求文档：
 
-https://github.com/xinyu198736/node-renren/doc/demand.md
+https://github.com/xinyu198736/node-renren/blob/master/doc/demand.md
