@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+        <title>定时发微博工具</title>
+        <meta property="wb:webmaster" content="c31a81790e58bd28" />
+        <style type="text/css">
+	.changecolor0{color:#f00;}
+	.changecolor1{color:#0f0;}
+	.changecolor2{color:#00f;}
+	.changecolor3{color:#f0f;}
+	.changecolor4{color:#0ff;}
+	.changecolor5{color:#000;}
+</style>
+    </head>
+    <body>
+         {{#data.error}}<div class="error">{{data.error}}</div>{{/data.error}}
+        <h1><span id="remaincolor">牛逼闪闪 放光芒</span>的定时发微博工具，@代码诗人芋头 出品</h1>
+        <a href="./auth">点我绑定微博</a>
+        <script type="text/javascript">
+            var i=0;
+            function blink(){
+                document.getElementById("remaincolor").className="changecolor"+i%6;
+                i++;
+            }
+            setInterval(blink, 100);
+        </script>
+    </body>
+</html>

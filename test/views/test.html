@@ -1,0 +1,627 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+        <title>新浪微博定时发送-by 代码诗人</title>
+        <script src="http://g1.tianping.com/s/kissy/kissy-min.js"></script>
+
+        <style>
+            *{
+                -webkit-tap-highlight-color:rgba(0,0,0,0);
+            }
+            ul,li{
+                list-style:none;
+                margin:0;padding:0;
+            }
+            .clearfix::after {
+                content: ".";
+                display: block;
+                height: 0;
+                clear: both;
+                visibility: hidden;
+            }
+            .template{
+                display:none;
+            }
+            root { 
+                display: block;
+            }
+            .hidden{
+                display:none !important;
+            }
+            em{
+                font-style:normal;
+            }
+            html{
+                height:100%;
+                width:100%;
+                overflow-x:hidden;
+            }
+            body{
+                font-size:12px;
+                font-family: "Helvetica Neue", Helvetica;
+                color:#666;
+            }
+
+            .btn{
+                background: -webkit-gradient(linear, 0 0, 0 100%, from(#f7f7f7), to(#f0f0f0));
+                border:1px solid #ccc;
+                padding-left:12px;
+                padding-right:14px;
+                height:30px;
+                line-height:30px;
+                text-align: center;
+                font-size:14px;
+                display: inline-block;
+                border-radius: 3px;
+                -webkit-border-radius: 2px;
+                color:#666;
+                cursor:pointer;
+            }
+            .btn:active{
+                background: -webkit-gradient(linear, 0 0, 0 100%, from(#dddddd), to(#dedede));
+                border:1px solid #ccc;
+                color:#fff;
+                border-radius: 3px;
+                cursor:pointer;
+            }
+            .btn-gray{
+                background: -webkit-gradient(linear, 0 0, 0 100%, from(#aaaaaa), to(#999999));
+                border:1px solid #999;
+                width:60px;
+                padding:0 5px;
+                height:27px;
+                line-height:27px;
+                text-align: center;
+                font-size:14px;
+                display: inline-block;
+                -webkit-border-radius: 2px;
+                color:#fff;
+            }
+            #head{
+                height:50px;
+                background:#f76565;
+                color:#fff;
+            }
+            body,html{
+                width:100%;
+                height:100%;
+                padding:0;
+                margin:0;
+            }
+            .view{
+                position:aboslute;
+                top:50px;
+                left:0;
+                width:100%;
+                height:100%;
+                display:none;
+            }
+            .view.current{
+                display:block;
+            }
+            #list .hd{
+                height:50px;
+                font-size:20px;
+                color:#fff;
+                background:#f76565;
+                line-height:50px;
+                text-align: center;
+            }
+            #list .hd .edit{
+                float:right;
+                margin-right:10px;
+                margin-top:10px;
+            }
+            #list .item{
+                border-bottom:1px solid #f7b4b4;
+            }
+            #list .item .pic{
+                width:80px;
+                height:auto;
+                float:left;
+                
+                padding:10px;
+            }
+            #list .item .right{
+                height:auto;
+                min-height:80px;
+                padding:10px;
+                padding-left:100px;
+                border-left:1px solid #efefef;
+            }
+            #list .item .content{
+                color:#666;
+            }
+            #list .item .time{
+                color:#999;
+                margin-top:10px;
+            }
+            #set table{
+                width:100%;
+            }
+            #set td{
+                padding:10px 20px;
+            }
+            #set textarea{
+                width:90%;
+                height:60px;
+                 border:1px solid #ccc;
+            }
+            #set input[type="text"]{
+                 border:1px solid #ccc;
+            }
+            #set input[type="date"]{
+                height:30px;
+                 border:1px solid #ccc;
+            }
+            
+            
+            #set button{
+                 background: -webkit-gradient(linear, 0 0, 0 100%, from(#f7f7f7), to(#f0f0f0));
+                border:1px solid #ccc;
+                padding-left:12px;
+                padding-right:14px;
+                height:30px;
+                line-height:26px;
+                text-align: center;
+                font-size:14px;
+                display: inline-block;
+                border-radius: 3px;
+                -webkit-border-radius: 2px;
+                color:#666;
+                cursor:pointer;
+            }
+             #set button:hover{
+                background: -webkit-gradient(linear, 0 0, 0 100%, from(#dddddd), to(#dedede));
+                border:1px solid #ccc;
+                color:#111;
+                border-radius: 3px;
+                cursor:pointer;
+            }
+            
+            
+            
+            ul li{ list-style: none; clear:both; margin:10px 0 }
+            img {float:left;margin:0 10px 10px 0;}
+            #statusBox{width:300px}
+            .retweet{ font-size:12px; margin:5px;}
+            caption { 
+                padding: 0 0 5px 0; 
+                width: 700px; 
+                font: italic 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; 
+                text-align: right; 
+            } 
+            table{
+                border-spacing: 0;
+            }
+            th { 
+                font: bold 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; 
+                color: #fff; 
+                border-right: 1px solid #fff; 
+                border-bottom: 1px solid #ea7965; 
+                border-top: 1px solid #ea7965; 
+                letter-spacing: 2px; 
+                text-transform: uppercase; 
+                text-align: left; 
+                padding: 6px 6px 6px 12px; 
+                background: #ea7965  no-repeat; 
+            } 
+            /*power by www.winshell.cn*/ 
+            th.nobg { 
+                border-top: 0; 
+                border-left: 0; 
+                border-right: 1px solid #C1DAD7; 
+                background: none; 
+            } 
+
+            td { 
+                border-right: 1px solid #ea7965; 
+                border-bottom: 1px solid #ea7965; 
+                background: #fff; 
+                font-size:11px; 
+                padding: 6px 6px 6px 12px; 
+                color: #666; 
+            } 
+            h2{
+                font-size:16px;
+                color:#666;
+                line-height:30px;
+                border-bottom:1px solid #dedede;
+                margin-top:20px;
+            }
+            .username{
+                font-weight:bold;
+                color:#0099FF;
+                font-size:18px;
+            }
+            .error{
+                height:50px;
+                font-size:20px;
+                color:#FF0000;
+                line-height:50px;
+            }
+            body,html{
+                padding:0;
+                margin:0;
+            }
+            select{
+                margin-right:10px;
+            }
+            .hidden{
+                display:none;
+            }
+            #zhua_loading{
+                position: fixed;
+                _position: absolute;
+                border: 1px solid #FEE581;
+                background: #FFF5CC;
+                padding: 5px 20px;
+                border-radius: 3px;
+                box-shadow: 2px 2px 2px #AAA;
+                color: #666;
+                z-index: 10000;
+                font-size:12px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>新浪微博定时发送-by代码诗人</h1>
+        
+        <h2 style="font-size:12px;">当前账号<em class="username">代码诗人芋头</em>，本页显示的队列中的微博将发送到此账号，<a href="/">点我切换账号</a>！切换账号后队列不会丢失。（此队列并非你一人独享，其他人如持有此账号，可跟你共同编辑此列表）</h2>
+        <h2>添加新的定时发送</h2>
+        <form action="" id="mainForm" method="post" enctype="multipart/form-data" >
+            <table id="set">
+                <tr>
+                    <th width="100"> </th>
+                    <th width="500"> </th>
+                    <th width="200"> </th>
+                </tr>
+                <tr>
+                    <td>从xiangqu.com的详情内容页抓取</td>
+                    <td>
+                        url:<input type="text" style="width:300px;" id="zhua_url"/><button id="zhua" type="button">抓取</button>
+                    </td>
+                    <td>自动从网页获取图片和内容</td>
+                </tr>
+                <tr>
+                    <td>批量抓取</td>
+                    <td>
+                        url:<textarea  style="width:300px;height:80px;" id="zhua_urls"></textarea>
+                        <button id="zhuas" type="button">批量抓取</button>
+                    </td>
+                    <td>每行一个详情url即可。</td>
+                </tr>
+                <tr>
+                    <td>发送时间*</td>
+                    <td>
+                        年：<select id="year"  name="wb_year"></select>
+                        月：<select id="month"  name="wb_month"></select>
+                        日：<select id="day"  name="wb_day"></select>
+                        <br/>
+                        时：<select id="hour" name="wb_hour"></select>
+                        分：<select id="minute" name="wb_minute"></select>
+                        秒：<select id="second" name="wb_second"></select>
+                    </td>
+                    <td>请不要选择时间早于当前时间的时间，否则会立即发送到微博。<br/>请不要选择7天之后的时间，只能定时7天内的微博，否则不会发送。</td>
+                </tr>
+                <tr>
+                    <td>发送文本内容*</td>
+                    <td><textarea style="width:500px;height:80px;" id="input-content" name="wb_content"></textarea></td>
+                    <td>不要超过130字，否则会做截断处理。<br/>
+                        当前长度：<em id="content-length">0</em></td>
+                </tr>
+                <tr>
+                    <td>发送图片</td>
+                    <td><input type="file" name="wb_pic" id="J_wb_pic"/><img src="" id="J_online_pic"/><input type="hidden" name="online_pic" id="J_online_pic_url"/></td>
+                    <td>可选，大小<5M，支持png，jpg，gif。图片错误可能导致微博发送失败！</td>
+                </tr>
+                <tr>
+                    <td>是否不自动处理图片</td>
+                    <td><input type="checkbox" name="no_do_handle" /></td>
+                    <td>注意这句话的逻辑额</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><button type="submit">提交</button></td>
+                    <td></td>
+                </tr>
+            </table>
+        </form>
+
+        <h2>定时发送列表</h2>
+        <table>
+            <tr>
+                <th width="100">发送时间</th>
+                <th width="500">发送内容</th>
+                <th width="200">图片</th>
+                <th width="100">操作</th>
+            </tr>
+            <tr>
+                <td class="send-time">2012-9-11 3:0:0</td>
+                <td>天然蟒蛇皮的花纹和颜色,狂野大气。 http:&#x2F;&#x2F;t.cn&#x2F;zWF1Brl 来自@想去</td>
+                <td><img src=".&#x2F;images&#x2F;1347271063353-25911404.jpg" width="100" height="100" class="J_Pic" style="display:block;"/></td>
+                <td><a href="/del?id=284">删除</a></td>
+            </tr>
+            <tr>
+                <td class="send-time">2012-9-11 2:0:0</td>
+                <td>@TOKEN胡依林“UT.Shoes”设计概念可以被概括为1+1&gt;2。在材料的选取上，他的实践可谓完美诠释了“敢想敢为”的真谛。你敢想像，一双看起来只是颜色鲜艳的轻便跑鞋，是用纸用上了两种原本并无交集的高科技材质吗？敢想，还不够 http:&#x2F;&#x2F;t.cn&#x2F;zWF1Brl 来自@想</td>
+                <td><img src=".&#x2F;images&#x2F;1347271063307-74201879.jpg" width="100" height="100" class="J_Pic" style="display:block;"/></td>
+                <td><a href="/del?id=283">删除</a></td>
+            </tr>
+            <tr>
+                <td class="send-time">2012-9-11 1:0:0</td>
+                <td>帆布洗水简约复古个性单手提包 http:&#x2F;&#x2F;t.cn&#x2F;zWF1Brl 来自@想去</td>
+                <td><img src=".&#x2F;images&#x2F;1347271062559-65459550.jpg" width="100" height="100" class="J_Pic" style="display:block;"/></td>
+                <td><a href="/del?id=282">删除</a></td>
+            </tr>
+            <tr>
+                <td class="send-time">2012-9-11 0:0:0</td>
+                <td>双腿放光！ http:&#x2F;&#x2F;t.cn&#x2F;zWF14qE 来自@想去</td>
+                <td><img src=".&#x2F;images&#x2F;1347270013049-9669719.jpg" width="100" height="100" class="J_Pic" style="display:block;"/></td>
+                <td><a href="/del?id=281">删除</a></td>
+            </tr>
+            <tr>
+                <td class="send-time">2012-9-10 23:0:0</td>
+                <td>简约而时尚的纯银戒指情侣对戒尾戒 http:&#x2F;&#x2F;t.cn&#x2F;zWF1zhn 来自@想去</td>
+                <td><img src=".&#x2F;images&#x2F;1347269974948-16280233.jpg" width="100" height="100" class="J_Pic" style="display:block;"/></td>
+                <td><a href="/del?id=280">删除</a></td>
+            </tr>
+            <tr>
+                <td class="send-time">2012-9-10 22:0:0</td>
+                <td>波浪与层次感的设计，增加了浪漫感。 http:&#x2F;&#x2F;t.cn&#x2F;zWFuiuK 来自@想去</td>
+                <td><img src=".&#x2F;images&#x2F;1347268987918-53236590.jpg" width="100" height="100" class="J_Pic" style="display:block;"/></td>
+                <td><a href="/del?id=276">删除</a></td>
+            </tr>
+            <tr>
+                <td class="send-time">2012-9-10 21:0:0</td>
+                <td>艳丽的橘色面料是手感比较顺滑进口的涤棉布非常好打理里衬是纯棉布料搭配中性的色彩的衣服效果会很不错 http:&#x2F;&#x2F;t.cn&#x2F;zWFuiuK 来自@想去</td>
+                <td><img src=".&#x2F;images&#x2F;1347268988025-43497717.jpg" width="100" height="100" class="J_Pic" style="display:block;"/></td>
+                <td><a href="/del?id=275">删除</a></td>
+            </tr>
+            <tr>
+                <td class="send-time">2012-9-10 20:0:0</td>
+                <td>來自義大利藝術品牌PAPINEE的系列作品，結合國際傑出的設計師團隊，推出一系列獨特、充滿張力的布偶、抱枕的生活家飾，以無私無限的生活熱愛，期盼為下一代帶來充滿回憶與創意激發的美好童年。烏龜Podocnemis，來自巴西，湛藍海 http:&#x2F;&#x2F;t.cn&#x2F;zWFuiuK 来自@想</td>
+                <td><img src=".&#x2F;images&#x2F;1347268987968-37799466.jpg" width="100" height="100" class="J_Pic" style="display:block;"/></td>
+                <td><a href="/del?id=274">删除</a></td>
+            </tr>
+            <tr>
+                <td class="send-time">2012-9-10 19:0:0</td>
+                <td>性感妩媚，充满诱惑！ http:&#x2F;&#x2F;t.cn&#x2F;zWFuiuK 来自@想去</td>
+                <td><img src=".&#x2F;images&#x2F;1347268987306-88693840.jpg" width="100" height="100" class="J_Pic" style="display:block;"/></td>
+                <td><a href="/del?id=273">删除</a></td>
+            </tr>
+        </table>
+        <div id="img_con" class="hidden"></div>
+        <div id="zhua_loading" class="hidden">抓取中，可能比较慢，请耐心等候。。。</div>
+        <script>
+            (function(){
+                var S=KISSY,DOM=S.DOM,Event=S.Event;
+                var nowTime=new Date()
+                for(var i=0;i<24;i++){
+                    var varItem = new Option(i, i);      
+                    if(i==nowTime.getHours()){
+                        varItem.selected=true;
+                    }
+                    DOM.get("#hour").options.add(varItem);     
+                }
+                for(var i=0;i<60;i++){
+                    var varItem = new Option(i, i);      
+                    if(i==nowTime.getMinutes()){
+                        varItem.selected=true;
+                    }
+                    DOM.get("#minute").options.add(varItem);     
+                }
+                for(var i=0;i<60;i++){
+                    var varItem = new Option(i, i);      
+                    if(i==0){
+                        varItem.selected=true;
+                    }
+                    DOM.get("#second").options.add(varItem);     
+                }
+                for(var i=2012;i<2022;i++){
+                    var varItem = new Option(i, i);      
+                    if(i==nowTime.getYear()){
+                        varItem.selected=true;
+                    }
+                    DOM.get("#year").options.add(varItem);     
+                }
+                for(var i=1;i<=12;i++){
+                    var varItem = new Option(i, i);      
+                    if(i==(nowTime.getMonth()+1)){
+                        varItem.selected=true;
+                    }
+                    DOM.get("#month").options.add(varItem);     
+                }
+                var year=DOM.get("#year")
+                var month=DOM.get("#month")
+                var day=DOM.get("#day")
+                var checkDay=function(){
+                    var value=month.value*1;
+                    day.options.length=0;
+                    var d=0;
+                    if(value==1||value==3||value==5||value==7||value==8||value==10||value==12){
+                        while(d++<31){
+                            var varItem =new Option(d<10?"0"+d:d,d)  
+                            if(d==(nowTime.getDate())){
+                                varItem.selected=true;
+                            }
+                            day.options.add(varItem)
+                        }
+                    }else if(value==2){
+                        if (year.value%400 == 0 || (year.value%4 == 0 && year.value%100 != 0)){
+                            while(d++<28){
+                                var varItem =new Option(d<10?"0"+d:d,d)  
+                                if(d==(nowTime.getDate())){
+                                    varItem.selected=true;
+                                }
+                                day.options.add(varItem)
+                            }
+                        }else{
+                            while(d++<29){
+                                var varItem =new Option(d<10?"0"+d:d,d)  
+                                if(d==(nowTime.getDate())){
+                                    varItem.selected=true;
+                                }
+                                day.options.add(varItem)
+                            }
+                        }
+                    }else{
+                        while(d++<30){
+                            var varItem =new Option(d<10?"0"+d:d,d)  
+                            if(d==(nowTime.getDate())){
+                                varItem.selected=true;
+                            }
+                            day.options.add(varItem)
+                        }
+                    }
+                    
+                }
+                checkDay()
+                Event.on(year,"change",function(e){
+                    checkDay()
+                })
+                Event.on(month,"change",function(e){
+                    checkDay()
+                })
+                Event.on("#mainForm","submit",function(e){
+                    e.halt();
+                    if(!DOM.val("#input-content")){
+                        alert("微博内容不能为空")
+                        return false;
+                    }
+                    var time=new Date(DOM.val("#year"),DOM.val("#month")-1,DOM.val("#day"),DOM.val("#hour"),DOM.val("#minute"),DOM.val("#second"))
+                    if(time.getTime()<=(new Date()).getTime()){
+                        var ok=confirm("你确认提交早于现在时间的计划？")
+                        if(ok){
+                            this.submit();
+                        }else{
+                            
+                        }
+                        return false;
+                    }
+                    this.submit();
+                })
+                
+                setInterval(function(){
+                    DOM.html("#content-length",DOM.val("#input-content").length)
+                },1000)
+                Event.on("#zhua","click",function(){
+                    KISSY.DOM.css("#zhua_loading",{
+                        left:DOM.viewportWidth()/2-130,
+                        top:DOM.scrollTop()+200,
+                        display:"block",
+                        opacity:"0"
+                    })
+                    KISSY.Anim("#zhua_loading",{
+                        opacity:1
+                    },0.5,"fadein",function(){
+                        
+                    }).run();
+                    S.IO({
+                        type : 'get',
+                        url : "/zhua",
+                        data : {
+                            url:DOM.val("#zhua_url")
+                        },
+                        dataType : 'json',
+                        success : function(data){
+                            if(data.pic){
+                                DOM.css("#J_wb_pic",{
+                                    display:"none"
+                                })
+                                DOM.css("#J_online_pic",{
+                                    display:"block"
+                                })
+                                DOM.get("#J_online_pic").src="http://"+window.location.host+data.pic.substr(1,data.pic.length)
+                                DOM.val("#J_online_pic_url",data.pic)
+                                DOM.val("#input-content",data.content.substr(0,139))
+                                
+                                KISSY.Anim("#zhua_loading",{
+                                    opacity:0
+                                },0.5,"fadein",function(){
+                                    KISSY.DOM.css("#zhua_loading",{
+                                        display:"none",
+                                    })
+                                }).run();   
+                               
+                            }else{
+                                alert("抓取失败")
+                                KISSY.Anim("#zhua_loading",{
+                                    opacity:0
+                                },0.5,"fadein",function(){
+                                    KISSY.DOM.css("#zhua_loading",{
+                                        display:"none",
+                                    })
+                                }).run();   
+                            }
+                        }
+                    })
+                })
+                Event.on("#zhuas","click",function(){
+                    KISSY.DOM.css("#zhua_loading",{
+                        left:DOM.viewportWidth()/2-130,
+                        top:DOM.scrollTop()+200,
+                        display:"block",
+                        opacity:"0"
+                    })
+                    KISSY.Anim("#zhua_loading",{
+                        opacity:1
+                    },0.5,"fadein",function(){
+                        
+                    }).run();
+                    S.IO({
+                        type : 'get',
+                        url : "/zhuas",
+                        data : {
+                            urls:DOM.val("#zhua_urls"),
+                            lastTime:DOM.html(".send-time")?(new Date(DOM.html(".send-time"))).getTime():0
+                        },
+                        dataType : 'json',
+                        success : function(data){
+                            if(data.success){
+                                KISSY.Anim("#zhua_loading",{
+                                    opacity:0
+                                },0.5,"fadein",function(){
+                                    KISSY.DOM.css("#zhua_loading",{
+                                        display:"none",
+                                    })
+                                }).run();   
+                                window.location.href=window.location.href
+                               
+                            }else{
+                                alert("抓取失败")
+                                KISSY.Anim("#zhua_loading",{
+                                    opacity:0
+                                },0.5,"fadein",function(){
+                                    KISSY.DOM.css("#zhua_loading",{
+                                        display:"none",
+                                    })
+                                }).run();   
+                            }
+                        }
+                    })
+                })
+                /*
+                Event.on(".J_Pic","mouseenter",function(e){
+                    DOM.removeClass("#img_con","hidden")
+                    DOM.html("#img_con","<img src='"+this.src+"' />")
+                    e.halt();
+                })
+                Event.on(document.body,"mousemove",function(e){
+                    DOM.css("#img_con",{
+                        left:e.pageX,
+                        top:e.pageY,
+                        position:"absolute"
+                    })
+                    
+                })
+                Event.on(document.body,"mouseenter",function(){
+                    DOM.addClass("#img_con","hidden")
+                })
+                 */
+            })();
+        </script>
+    </body>
+</html>
