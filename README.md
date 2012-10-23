@@ -25,6 +25,8 @@ https://github.com/willerce
 
 #示例：
 
+具体跟express的配合见：test/test.js
+
 ```
 
  var config = {
@@ -68,4 +70,34 @@ api.photos.upload({
     },function(error,data){
         console.log(data)
     })
+```
+
+oauth认证方法：
+
+```
+var config = {
+        app_key:"99754adae54e49bc826da1144ad2659d",
+        app_secret:"ddf05a79792a4a0aac6cfb42755e25c9",
+        redirect_uri:"http://localhost:8080/sina_auth_cb",
+        api_group: ["blog","photos"],
+        access_token:req.cookies.token
+    }
+var app_auth = {
+    auth:function (req, res) {
+        var api = new RenRen(config);
+        var auth_url = api.oauth.authorize();
+        res.redirect(auth_url);
+        res.end();
+    },
+    sina_auth_cb:function (req, res) {
+        var code = req.query.code;
+        var api = new RenRen(config);
+        api.oauth.accesstoken(code, function (data) {
+            res.cookie("token", data.access_token);
+            res.redirect('oauth');
+            res.end();
+        })
+
+    }
+}
 ```
