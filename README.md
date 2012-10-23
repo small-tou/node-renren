@@ -14,6 +14,9 @@ nodejs版人人网oauth认证和api sdk
 * 规范的代码
 * 支持图片上传
 
+#支持的api
+
+![支持的api](http://ww3.sinaimg.cn/large/6663ae3cjw1dy5f22a3jsj.jpg)
 
 #人人网api说明：
 
