@@ -3,7 +3,8 @@ var RenRen = require("../lib/index.js");
 var config = {
     app_key:"99754adae54e49bc826da1144ad2659d",
     app_secret:"ddf05a79792a4a0aac6cfb42755e25c9",
-    redirect_uri:"http://localhost:8080/sina_auth_cb"
+    redirect_uri:"http://localhost:8080/sina_auth_cb",
+    api_group: ["blog",""]
 }
 
 var app_auth = {
@@ -65,22 +66,33 @@ app.get("/sina_auth_cb", app_auth.sina_auth_cb)
 //中间页面，提醒用户认证成功
 app.get('/oauth', function (req, res) {
     var api = new RenRen(config);
-    api.status.set({
-        status:("hello send from node-renren library ! https://github.com/xinyu198736/node-renren"),
-        access_token:(req.cookies.token)
-    }, function (data) {
-        console.log(data);
-        var body = JSON.parse(data);
-        res.render('oauth.html');
-    })
+//    api.blog.addBlog({
+//        title:("hello nodejs !"),
+//        content:"this blog is create by nodejs :https://github.com/xinyu198736/node-renren",
+//        access_token:(req.cookies.token)
+//    }, function (data) {
+//        console.log(data);
+//        var body = JSON.parse(data);
+//        res.render('oauth.html');
+//    });
     
-    api.status.gets({
+ api.friends.getSameFriends({
+        uid1:83838506,
+        uid2:230901848,
+        fields:"uid,name",
         access_token:(req.cookies.token)
     }, function (data) {
         console.log(data);
-        var body = JSON.parse(data);
+        var data = JSON.parse(data);
+        var text="系统判断，我和@孙歌(230901848) 的共同好友有："
+        data.friends.forEach(function(person){
+            text+="@"+person.name+"("+person.uid+")"+" ";
+        })
+        api.status.set({
+            status:text,
+            access_token:(req.cookies.token)
+        })
         res.render('oauth.html');
-    })
-
+    });
 });
 
