@@ -73,6 +73,14 @@ app.get('/oauth', function (req, res) {
         var body = JSON.parse(data);
         res.render('oauth.html');
     })
+    
+    api.status.gets({
+        access_token:(req.cookies.token)
+    }, function (data) {
+        console.log(data);
+        var body = JSON.parse(data);
+        res.render('oauth.html');
+    })
 
 });
 
