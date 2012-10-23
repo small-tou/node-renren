@@ -66,7 +66,7 @@ app.get("/sina_auth_cb", app_auth.sina_auth_cb)
 app.get('/oauth', function (req, res) {
     var api = new RenRen(config);
     api.status.set({
-        status:("hello"),
+        status:("hello send from node-renren library ! https://github.com/xinyu198736/node-renren"),
         access_token:(req.cookies.token)
     }, function (data) {
         console.log(data);
