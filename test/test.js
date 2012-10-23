@@ -1,10 +1,11 @@
 var RenRen = require("../lib/index.js");
-
+var underscore=require("underscore");
+var path=require("path")
 var config = {
     app_key:"99754adae54e49bc826da1144ad2659d",
     app_secret:"ddf05a79792a4a0aac6cfb42755e25c9",
     redirect_uri:"http://localhost:8080/sina_auth_cb",
-    api_group: ["blog",""]
+    api_group: ["blog","photos"]
 }
 
 var app_auth = {
@@ -65,23 +66,33 @@ app.get("/auth", app_auth.auth)
 app.get("/sina_auth_cb", app_auth.sina_auth_cb)
 //中间页面，提醒用户认证成功
 app.get('/oauth', function (req, res) {
+    var config = {
+    app_key:"99754adae54e49bc826da1144ad2659d",
+    app_secret:"ddf05a79792a4a0aac6cfb42755e25c9",
+    redirect_uri:"http://localhost:8080/sina_auth_cb",
+    api_group: ["blog","photos"],
+    access_token:req.cookies.token
+}
     var api = new RenRen(config);
 //    api.blog.addBlog({
 //        title:("hello nodejs !"),
 //        content:"this blog is create by nodejs :https://github.com/xinyu198736/node-renren",
 //        access_token:(req.cookies.token)
-//    }, function (data) {
+//    }, function (error,data) {
 //        console.log(data);
 //        var body = JSON.parse(data);
 //        res.render('oauth.html');
 //    });
     
+    
+    //判断共同好友的例子
+   /**
  api.friends.getSameFriends({
         uid1:83838506,
         uid2:230901848,
         fields:"uid,name",
         access_token:(req.cookies.token)
-    }, function (data) {
+    }, function (error,data) {
         console.log(data);
         var data = JSON.parse(data);
         var text="系统判断，我和@孙歌(230901848) 的共同好友有："
@@ -93,6 +104,17 @@ app.get('/oauth', function (req, res) {
             access_token:(req.cookies.token)
         })
         res.render('oauth.html');
-    });
+    }); 
+    **/
+   api.photos.upload({
+       upload:path.join(__dirname, "/test.jpg"),
+       caption:"upload by nodejs"
+   },function(error,data){
+       console.log(data)
+   })
+    
 });
+
+
+
 
