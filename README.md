@@ -26,6 +26,12 @@ http://wiki.dev.renren.com/wiki/API
 
 https://github.com/willerce
 
+#捐助
+
+如果觉得有用，请捐几块钱支持下作者，点这里捐助：https://me.alipay.com/mier
+
+如果有问题，请提交issues，或者联系我：676588498。偶会尽量快速解决，谢啦。
+
 #示例：
 
 具体跟express的配合见：test/test.js
@@ -104,3 +110,4 @@ var app_auth = {
     }
 }
 ```
+

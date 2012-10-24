@@ -1,0 +1,19 @@
+{
+  "name": "renren",
+  "version": "0.0.1",
+  "description": "nodejs版人人网oauth认证和api sdk",
+  "main": "lib/index.js",
+  "keywords":[
+      "sdk", "renren","api","openapi"
+  ],
+  "scripts": {
+    "test": "node ./test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xinyu198736/node-renren"
+  },
+  "author": "yutou",
+  "license": "MIT",
+  "dependencies":{"underscore":"1.4.2","MD5":"1.0.1","request":"2.11.4","form-data":"0.0.4"}
+}

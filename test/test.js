@@ -81,8 +81,6 @@ app.get('/oauth', function (req, res) {
     }, function (error,data) {
         console.log(data);
     });
-    
-    
     //判断共同好友的例子
     /**
  api.friends.getSameFriends({
