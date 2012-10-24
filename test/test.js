@@ -18,7 +18,7 @@ var app_auth = {
     sina_auth_cb:function (req, res) {
         var code = req.query.code;
         var api = new RenRen(config);
-        api.oauth.accesstoken(code, function (data) {
+        api.oauth.accesstoken(code, function (error,data) {
             res.cookie("token", data.access_token);
             res.redirect('oauth');
             res.end();
