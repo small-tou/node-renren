@@ -1,6 +1,6 @@
 {
   "name": "renren",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "nodejs版人人网oauth认证和api sdk",
   "main": "lib/index.js",
   "keywords":[
